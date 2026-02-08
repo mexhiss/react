@@ -1,136 +1,66 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function MultiStepRegister() {
-  const [step, setStep] = useState(1);
-const [formData,SetFormData]=useState({
-  fullname : '',
-  email : '',
-  age : '',
-  password : '',
-  confirmPassword : '',
-  acceptTerms : false
-})
-  
- 
+function UserDashboardAsync() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  
+  const fetchUsers = async () => {
+    setLoading(true);
+    setError(null);
 
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+    try {
+      const res = await fetch("https://jsonplaceholder.typicode.com/users");
 
-  function nextStep() {
-    if (formData.fullname.length < 4) {
-      setError("Fullname duhet të ketë të paktën 4 karaktere");
-      return;
+      if (!res.ok) {
+        throw new Error("failed to load users");
+      }
+
+      const data = await res.json();
+      console.log(data)
+      setUsers(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    if (!formData.email.includes("@") || !formData.email.includes(".")) {
-      setError("Email jo valide");
-      return;
-    }
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-    if (formData.age < 16) {
-      setError("Duhet të jesh 16+");
-      return;
-    }
-
-    setError("");
-    setStep(2);
-  }
-
-  function submitForm(e) {
-    e.preventDefault();
-
-    if (formData.password.length < 6) {
-      setError("Password minimum 6 karaktere");
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      setError("Password nuk përputhen");
-      return;
-    }
-
-    if (!formData.acceptTerms) {
-      setError("Duhet të pranosh kushtet");
-      return;
-    }
-
-    setError("");
-    setSuccess("Regjistrimi u krye me sukses ");
-  }
+  const filteredUsers = users.filter((user) =>
+    user.name.includes(searchTerm)
+  );
 
   return (
-    <form onSubmit={submitForm}>
-      <h2>Hapi {step}</h2>
+    <div>
+      <h2>User Dashboard (Async/Await)</h2>
 
-      {error ? <p>{error}</p> : ''}
-      {success ? <p style={{ color: "green" }}>{success}</p> : " "}
+      <input
+        type="text"
+        placeholder="Search by name"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
 
-      {step === 1 ?  (
-        <>
-          <input
-            placeholder="Fullname"
-            value={formData.fullname}
-            onChange={(e) => SetFormData({...formData, fullname : e.target.value})}
-          />
+      <button onClick={fetchUsers}>reload users</button>
 
-          <input
-            placeholder="Email"
-            value={formData.email}
-            onChange={(e) => SetFormData({...formData, email : e.target.value})}
-          />
+      {loading && <p>loading users...</p>}
+      {error && <p>{error}</p>}
 
-          <input
-            type="number"
-            placeholder="Age"
-            value={formData.age}
-            onChange={(e) => SetFormData({...formData,age : e.target.value})}
-          />
-
-          <button type="button" onClick={nextStep}>
-            Next
-          </button>
-        </>
-      ) : ''} 
-
-      {step === 2 ? (
-        <>
-          <input
-            type="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={(e) => SetFormData({...formData,password:e.target.value})}
-          />
-
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={formData.confirmPassword}
-            onChange={(e) => SetFormData({...formData,confirmPassword : e.target.value})}
-          />
-
-          <label>
-            <input
-              type="checkbox"
-              checked={formData.acceptTerms}
-              onChange={(e) => SetFormData({...formData,
-                acceptTerms : e.target.checked })} 
-            />
-            Pranoj kushtet
-          </label>
-
-          <br />
-
-          <button type="button" onClick={() => setStep(1)}>
-            Back
-          </button>
-
-          <button type="submit">Submit</button>
-        </>
-      ) : ''}
-    </form>
+      {!loading &&
+        !error &&
+        filteredUsers.map((user) => (
+          <div key={user.id}>
+            <p><strong>{user.username}</strong></p>
+            <p>{user.email}</p>
+          </div>
+        ))}
+    </div>
   );
 }
 
-export default MultiStepRegister;
+export default UserDashboardAsync;
