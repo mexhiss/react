@@ -1,4 +1,4 @@
-import { useWindowWidth } from "../width";
+import { useWindowWidth } from "./width";
 
 export default function Width(){
 
