@@ -1,10 +1,10 @@
-import PostsDashboard from "./posts";
+import Mesazh2 from "../mesazh2"
 
 
 export default function App(){
 
   return(
-    <PostsDashboard/>
+    <Mesazh2/>
   )
   
 }

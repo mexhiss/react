@@ -1,9 +1,8 @@
-import Fetchdata from "../fetch";
-
+import Interval from "./interval";
 function App() {
  
  return(
-  <Fetchdata/>
+  <Interval/>
  )
 }
 
