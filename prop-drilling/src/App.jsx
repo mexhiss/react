@@ -1,32 +1,22 @@
+
 import { useState } from "react";
-import ThemeContext from "./UserContext.jsx/context";
-import Header from "./header";
-import Card from "./Card";
+import Layout from "./layout";
+import ColorContext from "./UserContext.jsx/context";
 
-import ThemeButton from "./ThemeButton";
+export default function App(){
 
-import { useEffect } from "react";
+ 
+const [color,setColor]=useState('')
 
-export default function App() {
-  const [theme, setTheme] = useState(false);
 
-  const toggleTheme = () => setTheme(!theme);
 
-  // update body background whenever theme changes
-  useEffect(() => {
-    document.body.style.backgroundColor = theme ? "#fff" : "#222";
-    document.body.style.color = theme  ? "#000" : "#fff";
-  }, [theme]);
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div style={{ padding: "20px" }}>
-        <ThemeButton />
-        <Header />
-        <Card />
-        {/* Footer */}
-      </div>
-    </ThemeContext.Provider>
-  );
+return(
+<>
+  <ColorContext.Provider value={{color,setColor}}>
+<Layout/>
+  </ColorContext.Provider>
+</>
+)
+
 }
-

@@ -1,4 +1,4 @@
 import { createContext } from "react";
 
-const ThemeContext = createContext(); // create global theme context
-export default ThemeContext;
+const ColorContext = createContext(); 
+export default ColorContext;
