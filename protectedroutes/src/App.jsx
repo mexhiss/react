@@ -6,34 +6,37 @@ import { useNavigate } from 'react-router-dom'
 
 import { useState } from 'react'
 
-export default function App(){
+// App.jsx
+export default function App() {
+  const [user, setUser] = useState(null)
+  const navigate = useNavigate()
 
-  const[user,setUser]=useState(null)
-
- const navigate=useNavigate()
-  return(
+  return (
     <>
-    
-<Routes>
-  <Route path='/' element={<></>}/>
-    <Route path='/dashboard' element={<ProtectedRoute user={user}><Dashboard/></ProtectedRoute>}/>
-<Route path='/admin'  element={<ProtectedRoute user={user} adminOnly={true}>
-<Admin/>
-</ProtectedRoute>} />
+     
+      <button onClick={() => { setUser({ name: 'user', role: 'user' }); navigate('/dashboard') }}>
+        Log as User
+      </button>
+      <button onClick={() => { setUser({ name: 'admin', role: 'admin' }); navigate('/admin') }}>
+        Log as Admin
+      </button>
+      <button onClick={() => { setUser(null); navigate('/') }}>
+        Logout
+      </button>
 
-</Routes>
-  
-    <button onClick={()=>{
-      setUser({name:'user',role:'user'})
-      navigate('/dashboard')
-  }}>Log as User</button>
-    <button onClick={()=>{setUser({name : 'admin', role : 'admin'})
-    navigate('/admin')}
-  }>Log as Admin</button>
-
-    <button onClick={()=>{
-      setUser(null)
-    }}>Logout</button>
-</>
+      <Routes>
+        <Route path="/" element={<h2>Home</h2>} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute user={user}>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin" element={
+          <ProtectedRoute user={user} adminOnly={true}>
+            <Admin />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </>
   )
 }
